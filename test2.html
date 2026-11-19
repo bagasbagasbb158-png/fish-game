@@ -1,0 +1,6 @@
+<!doctype html><canvas id="gameCanvas"></canvas><script type="module">
+import { Game } from './js/core/Game.js';
+const c=document.getElementById('gameCanvas'); c.width=1200;c.height=700; window.__game=new Game(c); window.__game.startGame();
+window.__result='started';
+setTimeout(()=>{try{const g=window.__game,e=g.getEnemies()[0],p=g.getPlayer(); e.x=p.x;e.y=p.y;e.size=10;p.size=30;g.update(16.67);g.draw();window.__result='ok'}catch(err){window.__result='ERR:'+err.stack}},300);
+</script>

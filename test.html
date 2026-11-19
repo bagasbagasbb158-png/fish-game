@@ -1,0 +1,7 @@
+<!doctype html><canvas id="gameCanvas"></canvas><script type="module">
+import { Game } from './js/core/Game.js';
+window.addEventListener('error',e=>console.log('ERR',e.error?.stack||e.message));
+window.addEventListener('unhandledrejection',e=>console.log('REJ',e.reason?.stack||e.reason));
+const c=document.getElementById('gameCanvas'); c.width=1200;c.height=700; window.__game=new Game(c); window.__game.startGame();
+setTimeout(()=>{ const g=window.__game; const e=g.getEnemies()[0], p=g.getPlayer(); e.x=p.x; e.y=p.y; e.size=10; p.size=30; console.log('BEFORE',g.getGameState().getCurrent(),g.getEnemies().length); try{g.update(16.67); console.log('UPDATED'); g.draw(); console.log('DRAWN')}catch(err){console.log('CATCH',err.stack)} },100);
+</script>

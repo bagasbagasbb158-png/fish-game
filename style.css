@@ -1,0 +1,148 @@
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:#02111d;color:#eefcff;font-family:Arial,sans-serif;user-select:none}
+#gameCanvas{display:block;width:100vw;height:100vh;cursor:crosshair;touch-action:none}
+
+/* Presentation polish: keep the canvas crisp and prevent browser gestures from
+   competing with the game on touch devices. */
+html, body { -webkit-tap-highlight-color: transparent; }
+#gameCanvas { image-rendering: auto; }
+@media (max-width: 720px) {
+  #gameCanvas { touch-action: none; }
+}
+
+
+/* Version label and in-game feedback form */
+#gameMeta {
+    position: fixed;
+    right: 16px;
+    bottom: 14px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 600 11px/1.2 Arial, sans-serif;
+}
+#gameVersion {
+    color: rgba(222, 247, 255, .72);
+    text-shadow: 0 1px 4px #00101a;
+    letter-spacing: .08em;
+}
+#openFeedback {
+    border: 1px solid rgba(137, 224, 255, .45);
+    border-radius: 999px;
+    padding: 9px 13px;
+    color: #eafaff;
+    background: rgba(3, 34, 51, .88);
+    box-shadow: 0 4px 18px rgba(0,0,0,.22);
+    font: 700 12px Arial, sans-serif;
+    cursor: pointer;
+}
+#openFeedback:hover { background: rgba(11, 75, 99, .96); }
+.feedback-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(0, 9, 18, .78);
+    backdrop-filter: blur(7px);
+    user-select: text;
+}
+.feedback-modal[hidden] { display: none; }
+.feedback-card {
+    position: relative;
+    width: min(100%, 470px);
+    max-height: min(92vh, 760px);
+    overflow-y: auto;
+    padding: 28px;
+    border: 1px solid rgba(130, 223, 255, .28);
+    border-radius: 18px;
+    color: #eafaff;
+    background: linear-gradient(160deg, #09283b, #041622 80%);
+    box-shadow: 0 24px 80px rgba(0,0,0,.45);
+    font-family: Arial, sans-serif;
+}
+.feedback-close {
+    position: absolute; top: 12px; right: 15px;
+    border: 0; background: transparent; color: #c8eaf5;
+    font-size: 28px; cursor: pointer;
+}
+.feedback-eyebrow { color: #65d9f4; font-size: 10px; font-weight: 800; letter-spacing: .18em; }
+.feedback-card h2 { margin: 7px 0 8px; font-size: 25px; }
+.feedback-description { margin-bottom: 20px; color: #a9c8d4; font-size: 13px; line-height: 1.5; }
+.feedback-card label { display: block; margin: 13px 0 7px; color: #d7f2fa; font-size: 12px; font-weight: 700; }
+.feedback-card select, .feedback-card textarea, .feedback-card input {
+    display: block; width: 100%; border: 1px solid #244c60; border-radius: 9px;
+    padding: 11px 12px; outline: none; background: #061c2a; color: #effbff;
+    font: 13px/1.45 Arial, sans-serif;
+}
+.feedback-card textarea { resize: vertical; min-height: 110px; }
+.feedback-card select:focus, .feedback-card textarea:focus, .feedback-card input:focus { border-color: #59cce9; }
+.feedback-context { margin-top: 12px; color: #7fa7b8; font-size: 11px; line-height: 1.4; }
+.feedback-submit {
+    width: 100%; margin-top: 15px; border: 0; border-radius: 9px; padding: 12px;
+    color: #03202c; background: #72e2f4; font-size: 13px; font-weight: 800; cursor: pointer;
+}
+.feedback-submit:hover { background: #a2effb; }
+.feedback-status { min-height: 18px; margin-top: 10px; color: #9be9c0; font-size: 12px; line-height: 1.4; }
+@media (max-width: 520px) {
+    #gameMeta { right: 9px; bottom: 9px; gap: 7px; }
+    #gameVersion { font-size: 9px; }
+    #openFeedback { padding: 8px 10px; font-size: 11px; }
+    .feedback-card { padding: 23px 19px; }
+}
+
+#accountPanel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#playerName {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#googleLoginBtn,
+#googleLogoutBtn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#googleLoginBtn {
+    background: white;
+    color: #222;
+}
+
+#googleLogoutBtn {
+    background: #e74c3c;
+    color: white;
+}
+
+#googleLoginBtn:hover,
+#googleLogoutBtn:hover {
+    opacity: 0.85;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* Hide account information during gameplay */
+#gameMeta {
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+}
+
+#gameMeta.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}

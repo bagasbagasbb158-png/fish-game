@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunger Fish</title>
+    <meta name="game-version" content="1.0.1">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <<div id="gameMeta" aria-label="Game information">
+
+    <span id="gameVersion">
+        HUNGER FISH · v1.0.1
+    </span>
+
+    <div id="accountPanel">
+
+        <span id="playerName">
+            Guest Player
+        </span>
+
+        <button id="googleLoginBtn" type="button">
+            Login with Google
+        </button>
+
+        <button id="googleLogoutBtn" type="button" hidden>
+            Logout
+        </button>
+
+    </div>
+
+    <button id="openFeedback" type="button">
+        ⚑ Feedback / Bug
+    </button>
+
+</div>
+
+    <div id="feedbackModal" class="feedback-modal" hidden>
+        <div class="feedback-card" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+            <button id="closeFeedback" class="feedback-close" type="button" aria-label="Close feedback form">×</button>
+            <p class="feedback-eyebrow">HELP US IMPROVE</p>
+            <h2 id="feedbackTitle">Send feedback</h2>
+            <p class="feedback-description">Laporkan bug atau kasih saran. Laporan akan disimpan di browser dan diunduh
+                sebagai file untuk developer.</p>
+
+            <form id="feedbackForm">
+                <label for="feedbackType">Jenis laporan</label>
+                <select id="feedbackType" name="Jenis laporan" required>
+                    <option value="Bug / Error">Bug / Error</option>
+                    <option value="Saran fitur">Saran fitur</option>
+                    <option value="Masalah gameplay">Masalah gameplay</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+
+                <label for="feedbackMessage">Detail laporan</label>
+                <textarea id="feedbackMessage" name="Detail laporan" rows="5" maxlength="3000"
+                    placeholder="Apa yang terjadi? Langkah untuk memunculkan bug..." required></textarea>
+
+                <label for="feedbackContact">Kontak (opsional)</label>
+                <input id="feedbackContact" name="Kontak" type="text" maxlength="120" placeholder="Email / username">
+
+                <!-- Hidden inputs to send metadata to Google Sheets silently -->
+                <input type="hidden" name="Game Version" value="1.0.1">
+                <input type="hidden" name="Error Count" value="0">
+
+                <div class="feedback-context" id="feedbackContext">Versi game dan info error akan dilampirkan otomatis jika tersedia.</div>
+
+                <button class="feedback-submit" type="submit">Kirim laporan</button>
+                <p id="feedbackStatus" class="feedback-status" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+    <script>
+        // Replace with the Web App URL from your Google Apps Script deployment
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzDJGqF6oqqY-qIu2Idj7B-hGLN_WUuWbOiVfEmUJg6Sg8v5IWTqKn7V9tAccmrWtcM/exec';
+        const form = document.getElementById('feedbackForm');
+        const statusText = document.getElementById('feedbackStatus');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault(); // Prevents the default page reload
+
+            // Show loading text
+            statusText.textContent = "Mengirim...";
+            statusText.style.color = "white"; // Optional styling
+
+            // Send the data to your Google Apps Script
+            fetch(scriptURL, {
+                method: 'POST',
+                body: new FormData(form)
+            })
+                .then(response => {
+                    statusText.textContent = "Laporan berhasil dikirim! Terima kasih.";
+                    statusText.style.color = "#4ade80"; // Green success text
+                    form.reset(); // Clear the form
+
+                    // Optional: Auto-close the modal after 3 seconds
+                    setTimeout(() => {
+                        document.getElementById('feedbackModal').hidden = true;
+                        statusText.textContent = "";
+                    }, 3000);
+                })
+                .catch(error => {
+                    statusText.textContent = "Gagal mengirim laporan. Silakan coba lagi.";
+                    statusText.style.color = "#f87171"; // Red error text
+                    console.error('Error!', error.message);
+                });
+        });
+
+        // Basic close button functionality
+        document.getElementById('closeFeedback').addEventListener('click', () => {
+            document.getElementById('feedbackModal').hidden = true;
+        });
+    </script>
+</body>
+
+</html>
